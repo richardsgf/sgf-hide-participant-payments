@@ -67,7 +67,10 @@ function hideeventfees_civicrm_buildForm($formName, &$form) {
   }
 
   if (in_array($formName, ['CRM_Event_Form_ParticipantView', 'CRM_Event_Form_Participant'])) {
-    if (!CRM_Core_Permission::check('civicrm see event fees')) {
+    $isBackendRegistration = $formName === 'CRM_Event_Form_Participant'
+      && (($form->getAction() & CRM_Core_Action::ADD) === CRM_Core_Action::ADD);
+
+    if (!CRM_Core_Permission::check('civicrm see event fees') && !$isBackendRegistration) {
       $form->assign('fee_level', []);
       $form->assign('hasPayment', FALSE);
       CRM_Core_Resources::singleton()->addStyle(
